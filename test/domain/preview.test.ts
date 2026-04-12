@@ -191,4 +191,14 @@ describe("canonical character normalization", () => {
       context: {}
     });
   });
+
+  it("rejects non-canonical issue payloads", () => {
+    expect(() =>
+      issueSchema.parse({
+        code: "VALIDATION_FAILED",
+        message: "Canonical character payload failed validation",
+        extra: true
+      })
+    ).toThrow();
+  });
 });

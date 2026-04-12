@@ -13,7 +13,7 @@ export const issueSchema = z.object({
   message: z.string().min(1),
   path: z.array(z.union([z.string(), z.number()])).default([]),
   context: z.record(z.string(), z.unknown()).default({})
-});
+}).strict();
 
 export const warningSchema = issueSchema;
 
