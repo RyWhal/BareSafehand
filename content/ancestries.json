@@ -1,0 +1,42 @@
+[
+  {
+    "id": "human",
+    "name": "Human",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified ancestry. Grants an additional heroic-path talent choice.",
+    "benefits": {
+      "bonus_talent": {
+        "type": "bonus_talent",
+        "notes": "Choose another talent in the current heroic path or the first talent of another heroic path."
+      }
+    }
+  },
+  {
+    "id": "singer",
+    "name": "Singer",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified ancestry. Grants Change Form and one verified starting singer-form package.",
+    "benefits": {
+      "granted_talent_ids": ["change_form"],
+      "starting_form_packages": [
+        {
+          "name": "Forms of Finesse",
+          "talent_ids": ["artform", "nimbleform"]
+        },
+        {
+          "name": "Forms of Wisdom",
+          "talent_ids": ["mediationform", "scholarform"]
+        },
+        {
+          "name": "Forms of Resolve",
+          "talent_ids": ["warform", "workform"]
+        }
+      ],
+      "change_form_targets": ["dullform", "mateform"]
+    }
+  }
+]

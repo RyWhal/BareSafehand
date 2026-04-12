@@ -1,0 +1,17 @@
+[
+  { "id": "opportunist", "name": "Opportunist", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Agent heroic path.", "path_id": "agent" },
+  { "id": "rousing_presence", "name": "Rousing Presence", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Envoy heroic path.", "path_id": "envoy" },
+  { "id": "seek_quarry", "name": "Seek Quarry", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Hunter heroic path.", "path_id": "hunter" },
+  { "id": "decisive_command", "name": "Decisive Command", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Leader heroic path.", "path_id": "leader" },
+  { "id": "erudition", "name": "Erudition", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Scholar heroic path.", "path_id": "scholar" },
+  { "id": "vigilant_stance", "name": "Vigilant Stance", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Key talent for the Warrior heroic path.", "path_id": "warrior" },
+  { "id": "change_form", "name": "Change Form", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Singer ancestry talent." },
+  { "id": "artform", "name": "Artform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "nimbleform", "name": "Nimbleform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "mediationform", "name": "Mediationform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "scholarform", "name": "Scholarform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "warform", "name": "Warform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "workform", "name": "Workform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified Singer starting form package talent." },
+  { "id": "dullform", "name": "Dullform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Confirmed Change Form target." },
+  { "id": "mateform", "name": "Mateform", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Confirmed Change Form target." }
+]

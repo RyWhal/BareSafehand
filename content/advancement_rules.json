@@ -1,0 +1,9 @@
+{
+  "id": "advancement_rules",
+  "name": "Advancement Rules",
+  "source_book": null,
+  "source_page": null,
+  "verification_status": "partial",
+  "notes": "Explicitly incomplete stub; advancement rules are not yet fully extracted.",
+  "incomplete": true
+}

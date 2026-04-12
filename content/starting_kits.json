@@ -1,0 +1,74 @@
+[
+  {
+    "id": "academic_kit",
+    "name": "Academic Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  },
+  {
+    "id": "artisan_kit",
+    "name": "Artisan Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  },
+  {
+    "id": "military_kit",
+    "name": "Military Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  },
+  {
+    "id": "courtier_kit",
+    "name": "Courtier Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  },
+  {
+    "id": "prisoner_kit",
+    "name": "Prisoner Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  },
+  {
+    "id": "underworld_kit",
+    "name": "Underworld Kit",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified by name only; kit contents are not yet extracted.",
+    "contents": {
+      "confirmed": null,
+      "unknown": null
+    }
+  }
+]

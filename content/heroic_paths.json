@@ -1,0 +1,62 @@
+[
+  {
+    "id": "agent",
+    "name": "Agent",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "insight",
+    "key_talent_id": "opportunist"
+  },
+  {
+    "id": "envoy",
+    "name": "Envoy",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "discipline",
+    "key_talent_id": "rousing_presence"
+  },
+  {
+    "id": "hunter",
+    "name": "Hunter",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "perception",
+    "key_talent_id": "seek_quarry"
+  },
+  {
+    "id": "leader",
+    "name": "Leader",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "leadership",
+    "key_talent_id": "decisive_command"
+  },
+  {
+    "id": "scholar",
+    "name": "Scholar",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "lore",
+    "key_talent_id": "erudition"
+  },
+  {
+    "id": "warrior",
+    "name": "Warrior",
+    "source_book": null,
+    "source_page": null,
+    "verification_status": "verified",
+    "notes": "Verified heroic path.",
+    "starting_skill_id": "athletics",
+    "key_talent_id": "vigilant_stance"
+  }
+]

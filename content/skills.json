@@ -1,0 +1,20 @@
+[
+  { "id": "agility", "name": "Agility", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "athletics", "name": "Athletics", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "heavy_weaponry", "name": "Heavy Weaponry", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "light_weaponry", "name": "Light Weaponry", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "stealth", "name": "Stealth", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "thievery", "name": "Thievery", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "crafting", "name": "Crafting", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "deduction", "name": "Deduction", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "discipline", "name": "Discipline", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "intimidation", "name": "Intimidation", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "lore", "name": "Lore", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "medicine", "name": "Medicine", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "deception", "name": "Deception", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "insight", "name": "Insight", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "leadership", "name": "Leadership", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "perception", "name": "Perception", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "persuasion", "name": "Persuasion", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." },
+  { "id": "survival", "name": "Survival", "source_book": null, "source_page": null, "verification_status": "verified", "notes": "Verified base skill." }
+]

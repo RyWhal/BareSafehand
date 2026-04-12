@@ -1,0 +1,23 @@
+[
+  { "id": "alethi", "name": "Alethi", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "azish", "name": "Azish", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "herdazian", "name": "Herdazian", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "iriali", "name": "Iriali", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "kharbranthian", "name": "Kharbranthian", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "listener", "name": "Listener", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "reshi", "name": "Reshi", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "shin", "name": "Shin", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "thaylen", "name": "Thaylen", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "unkalaki", "name": "Unkalaki", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "veden", "name": "Veden", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Cultural expertise example from the verified spec." },
+  { "id": "high_society", "name": "High Society", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." },
+  { "id": "military_life", "name": "Military Life", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." },
+  { "id": "wayfarer", "name": "Wayfarer", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." },
+  { "id": "hammers", "name": "Hammers", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Weapon expertise example from the verified spec." },
+  { "id": "longspears", "name": "Longspears", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Weapon expertise example from the verified spec." },
+  { "id": "shortbows", "name": "Shortbows", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Weapon expertise example from the verified spec." },
+  { "id": "knives", "name": "Knives", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Weapon expertise example from the verified spec." },
+  { "id": "religion", "name": "Religion", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." },
+  { "id": "botany", "name": "Botany", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." },
+  { "id": "literature", "name": "Literature", "source_book": null, "source_page": null, "verification_status": "partial", "notes": "Example expertise from the verified spec." }
+]
