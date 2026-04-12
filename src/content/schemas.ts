@@ -6,7 +6,7 @@ const baseContentSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   source_book: z.string().nullable(),
-  source_page: z.number().int().nullable(),
+  source_page: z.union([z.string(), z.number()]).nullable(),
   verification_status: verificationStatusSchema,
   notes: z.string().nullable()
 });
@@ -49,8 +49,8 @@ export const talentSchema = baseContentSchema.extend({
 
 export const startingKitSchema = baseContentSchema.extend({
   contents: z.object({
-    confirmed: z.array(z.string()).nullable(),
-    unknown: z.array(z.string()).nullable()
+    confirmed: z.array(z.string()).nullable().optional(),
+    unknown: z.array(z.string()).nullable().optional()
   })
 });
 
