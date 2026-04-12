@@ -2,110 +2,200 @@ import { z } from "zod";
 
 const sourceRulesVersionSchema = z.literal("stormlight-v1");
 
-const nullableValueSchema = z.union([z.string(), z.number()]).nullable().default(null);
+const defaultTextSchema = (fallback = "") =>
+  z.preprocess((value) => (value == null ? fallback : value), z.string());
 
-const attributesSchema = z
-  .object({
-    strength: z.number().int().min(0).max(3).default(0),
-    speed: z.number().int().min(0).max(3).default(0),
-    intellect: z.number().int().min(0).max(3).default(0),
-    willpower: z.number().int().min(0).max(3).default(0),
-    awareness: z.number().int().min(0).max(3).default(0),
-    presence: z.number().int().min(0).max(3).default(0)
-  })
-  .default({});
+const nullableTextSchema = z.preprocess(
+  (value) => (value == null || value === "" ? null : value),
+  z.string().nullable()
+);
 
-const metaSchema = z
-  .object({
-    version: z.literal(1).default(1),
-    sourceRulesVersion: sourceRulesVersionSchema.default("stormlight-v1"),
-    verificationMode: z.enum(["strict", "lenient"]).default("strict")
-  })
-  .default({});
+const integerSchema = (fallback = 0) =>
+  z.preprocess((value) => (value == null ? fallback : value), z.number().int());
 
-const identitySchema = z
-  .object({
-    level: z.literal(1).default(1),
-    tier: z.literal(1).default(1),
-    ancestryId: z.string().min(1).nullable().default(null),
-    cultureExpertiseIds: z.array(z.string().min(1)).default([]),
-    heroicPathId: z.string().min(1).nullable().default(null)
-  })
-  .default({});
+const booleanSchema = (fallback = false) =>
+  z.preprocess((value) => (value == null ? fallback : value), z.boolean());
 
-const skillsSchema = z.record(z.string().min(1), z.number().int().min(0).max(2)).default({});
+const isoTimestampSchema = z.preprocess(
+  (value) => (value == null || value === "" ? new Date().toISOString() : value),
+  z.string().datetime()
+);
 
-const customSkillSchema = z.record(z.string(), z.unknown());
+const metaSchema = z.object({
+  version: z.literal(1).default(1),
+  createdAt: isoTimestampSchema,
+  updatedAt: isoTimestampSchema,
+  sourceRulesVersion: sourceRulesVersionSchema.default("stormlight-v1"),
+  verificationMode: z.enum(["strict", "lenient"]).default("strict")
+});
 
-const resourcesSchema = z
-  .object({
-    investiture: z
-      .object({
-        current: z.number().int().min(0).default(0),
-        max: z.number().int().min(0).default(0)
-      })
-      .default({})
-  })
-  .default({});
+const identitySchema = z.object({
+  characterName: defaultTextSchema(""),
+  playerName: defaultTextSchema(""),
+  level: integerSchema(1),
+  tier: integerSchema(1),
+  ancestryId: nullableTextSchema.default(null),
+  cultureExpertiseIds: z.array(z.string().min(1)).default([]),
+  pathIds: z.array(z.string().min(1)).default([]),
+  startingPathId: nullableTextSchema.default(null)
+});
 
-const defensesSchema = z
-  .object({
-    physical: z.number().nullable().default(null),
-    cognitive: z.number().nullable().default(null),
-    spiritual: z.number().nullable().default(null)
-  })
-  .default({});
+const attributeValueSchema = integerSchema(0);
 
-const derivedSchema = z
-  .object({
-    physicalDefense: z.number().nullable().default(null),
-    cognitiveDefense: z.number().nullable().default(null),
-    spiritualDefense: z.number().nullable().default(null),
-    focusMax: z.number().nullable().default(null),
-    movement: nullableValueSchema,
-    recoveryDie: nullableValueSchema,
-    liftingCapacity: nullableValueSchema,
-    sensesRange: nullableValueSchema,
-    deflect: nullableValueSchema,
-    maxHealth: z.number().nullable().default(null)
-  })
-  .default({});
+const attributesSchema = z.object({
+  strength: attributeValueSchema,
+  speed: attributeValueSchema,
+  intellect: attributeValueSchema,
+  willpower: attributeValueSchema,
+  awareness: attributeValueSchema,
+  presence: attributeValueSchema
+});
 
-const storySchema = z
-  .object({
-    name: z.string().default(""),
-    summary: z.string().nullable().default(null),
-    background: z.string().nullable().default(null),
-    notes: z.string().nullable().default(null)
-  })
-  .default({});
+const skillSlotSchema = z.object({
+  ranks: integerSchema(0),
+  modifier: integerSchema(0)
+});
 
-const inventoryItemSchema = z.record(z.string(), z.unknown());
+const skillsSchema = z.object({
+  agility: skillSlotSchema.default({}),
+  athletics: skillSlotSchema.default({}),
+  heavyWeaponry: skillSlotSchema.default({}),
+  lightWeaponry: skillSlotSchema.default({}),
+  stealth: skillSlotSchema.default({}),
+  thievery: skillSlotSchema.default({}),
+  crafting: skillSlotSchema.default({}),
+  deduction: skillSlotSchema.default({}),
+  discipline: skillSlotSchema.default({}),
+  intimidation: skillSlotSchema.default({}),
+  lore: skillSlotSchema.default({}),
+  medicine: skillSlotSchema.default({}),
+  deception: skillSlotSchema.default({}),
+  insight: skillSlotSchema.default({}),
+  leadership: skillSlotSchema.default({}),
+  perception: skillSlotSchema.default({}),
+  persuasion: skillSlotSchema.default({}),
+  survival: skillSlotSchema.default({})
+});
 
-const radiantSchema = z
-  .object({
-    enabled: z.boolean().default(false)
-  })
-  .default({});
+const customSkillEntrySchema = z.object({
+  name: defaultTextSchema(""),
+  ranks: integerSchema(0),
+  modifier: integerSchema(0),
+  notes: nullableTextSchema
+});
+
+const customSkillsSchema = z.object({
+  physical: customSkillEntrySchema.nullable().default(null),
+  cognitive: customSkillEntrySchema.nullable().default(null),
+  spiritual: customSkillEntrySchema.nullable().default(null)
+});
+
+const expertiseListSchema = z.array(z.string().min(1)).default([]);
+const talentListSchema = z.array(z.string().min(1)).default([]);
+
+const resourceSlotSchema = z.object({
+  current: integerSchema(0),
+  max: integerSchema(0)
+});
+
+const resourcesSchema = z.object({
+  health: resourceSlotSchema.default({}),
+  focus: resourceSlotSchema.default({}),
+  investiture: resourceSlotSchema.default({})
+});
+
+const defenseSchema = z.object({
+  physical: integerSchema(0),
+  cognitive: integerSchema(0),
+  spiritual: integerSchema(0),
+  deflect: integerSchema(0)
+});
+
+const derivedSchema = z.object({
+  movement: nullableTextSchema.default(null),
+  recoveryDie: nullableTextSchema.default(null),
+  liftingCapacity: nullableTextSchema.default(null),
+  sensesRange: nullableTextSchema.default(null)
+});
+
+const inventoryEntrySchema = z.object({
+  itemId: z.string().min(1),
+  quantity: integerSchema(1),
+  name: defaultTextSchema(""),
+  notes: nullableTextSchema
+});
+
+const inventorySchema = z.object({
+  startingKitId: nullableTextSchema,
+  weapons: z.array(inventoryEntrySchema).default([]),
+  armor: z.array(inventoryEntrySchema).default([]),
+  equipment: z.array(inventoryEntrySchema).default([]),
+  currency: z
+    .object({
+      marks: integerSchema(0),
+      notes: defaultTextSchema("")
+    })
+    .default({
+      marks: 0,
+      notes: ""
+    })
+}).default({
+  startingKitId: null,
+  weapons: [],
+  armor: [],
+  equipment: [],
+  currency: {
+    marks: 0,
+    notes: ""
+  }
+});
+
+const storySchema = z.object({
+  purpose: defaultTextSchema(""),
+  obstacle: defaultTextSchema(""),
+  goals: z.array(z.string().min(1)).default([]),
+  notes: defaultTextSchema(""),
+  appearance: defaultTextSchema(""),
+  personality: defaultTextSchema(""),
+  connections: z.array(z.string().min(1)).default([])
+});
+
+const radiantIdealsSchema = z.object({
+  first: booleanSchema(false),
+  second: booleanSchema(false),
+  third: booleanSchema(false),
+  fourth: booleanSchema(false),
+  fifth: booleanSchema(false)
+});
+
+const radiantSchema = z.object({
+  enabled: booleanSchema(false),
+  radiantOrderId: nullableTextSchema,
+  sprenName: nullableTextSchema,
+  sprenBondRange: nullableTextSchema,
+  ideals: radiantIdealsSchema.default({}),
+  surges: z.array(z.string().min(1)).default([]),
+  stormlightActions: z.array(z.string().min(1)).default([])
+});
 
 const revisionEntrySchema = z.record(z.string(), z.unknown());
 
 export const CharacterSchema = z
   .object({
     id: z.string().min(1),
-    meta: metaSchema,
-    identity: identitySchema,
-    attributes: attributesSchema,
-    skills: skillsSchema,
-    customSkills: z.array(customSkillSchema).default([]),
-    expertises: z.array(z.string().min(1)).default([]),
-    talents: z.array(z.string().min(1)).default([]),
-    resources: resourcesSchema,
-    defenses: defensesSchema,
-    derived: derivedSchema,
-    inventory: z.array(inventoryItemSchema).default([]),
-    story: storySchema,
-    radiant: radiantSchema,
+    meta: metaSchema.default({}),
+    identity: identitySchema.default({}),
+    attributes: attributesSchema.default({}),
+    skills: skillsSchema.default({}),
+    customSkills: customSkillsSchema.default({}),
+    expertises: expertiseListSchema,
+    talents: talentListSchema,
+    resources: resourcesSchema.default({}),
+    defenses: defenseSchema.default({}),
+    derived: derivedSchema.default({}),
+    inventory: inventorySchema.default({}),
+    story: storySchema.default({}),
+    radiant: radiantSchema.default({}),
     conditions: z.array(z.string().min(1)).default([]),
     injuries: z.array(z.string().min(1)).default([]),
     rewards: z.array(z.string().min(1)).default([]),
@@ -117,6 +207,109 @@ export type Character = z.infer<typeof CharacterSchema>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  return value.filter((item): item is string => typeof item === "string" && item.length > 0);
+}
+
+function flattenStringArrays(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    return readStringArray(value) ?? [];
+  }
+
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  return Object.values(value).flatMap((entry) => readStringArray(entry) ?? []);
+}
+
+function normalizeCustomSkillSlot(value: unknown): Record<string, unknown> | null | undefined {
+  if (value == null) {
+    return null;
+  }
+
+  if (isRecord(value)) {
+    return value;
+  }
+
+  return null;
+}
+
+function normalizeSkills(value: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  return {
+    ...value,
+    heavyWeaponry: value.heavyWeaponry ?? value.heavy_weaponry,
+    lightWeaponry: value.lightWeaponry ?? value.light_weaponry
+  };
+}
+
+function normalizeInventory(value: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  const currency = isRecord(value.currency)
+    ? {
+        ...value.currency,
+        marks: value.currency.marks ?? value.currency.amount
+      }
+    : value.currency;
+
+  return {
+    ...value,
+    currency
+  };
+}
+
+function normalizeRadiant(value: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  return {
+    ...value,
+    radiantOrderId: value.radiantOrderId ?? value.orderId
+  };
+}
+
+function normalizeIdentity(value: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  const pathIds = readStringArray(value.pathIds);
+  const normalizedPathIds = pathIds ?? [];
+
+  return {
+    ...value,
+    ancestryId: value.ancestryId ?? null,
+    playerName: value.playerName ?? "",
+    pathIds: normalizedPathIds,
+    startingPathId: value.startingPathId ?? null
+  };
+}
+
+function normalizeDerived(value: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  return {
+    movement: value.movement,
+    recoveryDie: value.recoveryDie,
+    liftingCapacity: value.liftingCapacity,
+    sensesRange: value.sensesRange
+  };
 }
 
 function createCharacterId(): string {
@@ -131,7 +324,22 @@ export function normalizeCharacterInput(input: unknown): Character {
 
   return CharacterSchema.parse({
     ...payload,
-    id
+    id,
+    meta: payload.meta,
+    identity: normalizeIdentity(payload.identity),
+    skills: normalizeSkills(payload.skills),
+    customSkills: isRecord(payload.customSkills)
+      ? {
+          physical: normalizeCustomSkillSlot(payload.customSkills.physical),
+          cognitive: normalizeCustomSkillSlot(payload.customSkills.cognitive),
+          spiritual: normalizeCustomSkillSlot(payload.customSkills.spiritual)
+        }
+      : payload.customSkills,
+    expertises: flattenStringArrays(payload.expertises),
+    talents: flattenStringArrays(payload.talents),
+    derived: normalizeDerived(payload.derived),
+    inventory: normalizeInventory(payload.inventory),
+    radiant: normalizeRadiant(payload.radiant)
   });
 }
 
