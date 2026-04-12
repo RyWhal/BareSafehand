@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CharacterSchema, createEmptyCharacter, normalizeCharacterInput } from "../../src/domain/models/character";
+import { issueSchema } from "../../src/domain/models/issues";
 
 describe("canonical character normalization", () => {
   it("keeps the canonical payload aligned to the approved schema basis", () => {
@@ -10,6 +11,7 @@ describe("canonical character normalization", () => {
     expect(character.meta.verificationMode).toBe("strict");
     expect(typeof character.meta.createdAt).toBe("string");
     expect(typeof character.meta.updatedAt).toBe("string");
+    expect(character.meta.createdAt).toBe(character.meta.updatedAt);
     expect(Number.isNaN(Date.parse(character.meta.createdAt))).toBe(false);
     expect(Number.isNaN(Date.parse(character.meta.updatedAt))).toBe(false);
 
@@ -121,12 +123,13 @@ describe("canonical character normalization", () => {
     expect(character.revisionHistory).toEqual([]);
   });
 
-  it("defaults a normalized level 1 draft to strict verification mode", () => {
-    const character = normalizeCharacterInput({});
+  it("creates a fresh empty character with explicit identity metadata", () => {
+    const character = createEmptyCharacter();
 
     expect(character.meta.verificationMode).toBe("strict");
     expect(character.identity.level).toBe(1);
     expect(character.identity.tier).toBe(1);
+    expect(character.id.length).toBeGreaterThan(0);
   });
 
   it("defaults radiant.enabled to false and unsupported derived values to null", () => {
@@ -140,14 +143,52 @@ describe("canonical character normalization", () => {
     expect(character.resources.investiture.max).toBe(0);
   });
 
-  it("keeps ownerAccountId out of the canonical payload", () => {
-    const character = normalizeCharacterInput({
-      id: "character-preview-test",
+  it("strips ownerAccountId while preserving canonical input", () => {
+    const character = createEmptyCharacter();
+    const normalized = normalizeCharacterInput({
+      ...character,
       ownerAccountId: "account_123"
     });
 
-    expect("ownerAccountId" in character).toBe(false);
-    expect((character as { ownerAccountId?: string }).ownerAccountId).toBeUndefined();
-    expect(() => CharacterSchema.parse({ ...character, ownerAccountId: "account_123" })).not.toThrow();
+    expect(normalized).toEqual(character);
+    expect("ownerAccountId" in normalized).toBe(false);
+    expect((normalized as { ownerAccountId?: string }).ownerAccountId).toBeUndefined();
+  });
+
+  it("rejects drifted non-canonical input instead of coercing it", () => {
+    const character = createEmptyCharacter();
+
+    expect(() =>
+      normalizeCharacterInput({
+        ...character,
+        skills: {
+          ...character.skills,
+          heavy_weaponry: { ranks: 1, modifier: 0 }
+        }
+      })
+    ).toThrow();
+
+    expect(() =>
+      normalizeCharacterInput({
+        ...character,
+        expertises: {
+          physical: ["dueling"]
+        }
+      })
+    ).toThrow();
+  });
+
+  it("parses canonical issues with default path and context", () => {
+    expect(
+      issueSchema.parse({
+        code: "VALIDATION_FAILED",
+        message: "Canonical character payload failed validation"
+      })
+    ).toEqual({
+      code: "VALIDATION_FAILED",
+      message: "Canonical character payload failed validation",
+      path: [],
+      context: {}
+    });
   });
 });
