@@ -1,0 +1,8 @@
+node_modules
+coverage
+.wrangler
+.vite
+dist
+.DS_Store
+*.log
+worker-startup.cpuprofile
