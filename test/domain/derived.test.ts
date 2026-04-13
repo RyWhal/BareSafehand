@@ -69,6 +69,14 @@ describe("derived stat calculators", () => {
     expect(value).toBe(8);
   });
 
+  it("defaults missing attributes to zero", () => {
+    const value = calcPhysicalDefense({
+      attributes: {}
+    });
+
+    expect(value).toBe(10);
+  });
+
   it("defaults non-radiant investiture max to zero", () => {
     const value = calcInvestitureMax({
       radiant: {
@@ -105,36 +113,42 @@ describe("derived stat calculators", () => {
     });
 
     expect(result.values).toEqual({
-      physicalDefense: 15,
-      cognitiveDefense: 15,
-      spiritualDefense: 17,
-      focusMax: 3,
-      investitureMax: 0,
-      movement: null,
-      recoveryDie: null,
-      liftingCapacity: null,
-      sensesRange: null,
-      deflect: null,
-      maxHealth: null
+      defenses: {
+        physical: 15,
+        cognitive: 15,
+        spiritual: 17,
+        deflect: null
+      },
+      resources: {
+        health: {
+          max: null
+        },
+        focus: {
+          max: 3
+        },
+        investiture: {
+          max: 0
+        }
+      },
+      derived: {
+        movement: null,
+        recoveryDie: null,
+        liftingCapacity: null,
+        sensesRange: null
+      }
     });
 
     expect(result.issues).toHaveLength(6);
-    expect(result.issues.map((issue) => issue.code)).toEqual([
-      "UNSUPPORTED_RULE",
-      "UNSUPPORTED_RULE",
-      "UNSUPPORTED_RULE",
-      "UNSUPPORTED_RULE",
-      "UNSUPPORTED_RULE",
-      "UNSUPPORTED_RULE"
-    ]);
-    expect(result.issues.map((issue) => issue.path)).toEqual([
-      ["derived", "movement"],
-      ["derived", "recoveryDie"],
-      ["derived", "liftingCapacity"],
-      ["derived", "sensesRange"],
-      ["defenses", "deflect"],
-      ["resources", "health", "max"]
-    ]);
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["derived", "movement"] }),
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["derived", "recoveryDie"] }),
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["derived", "liftingCapacity"] }),
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["derived", "sensesRange"] }),
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["defenses", "deflect"] }),
+        expect.objectContaining({ code: "UNSUPPORTED_RULE", path: ["resources", "health", "max"] })
+      ])
+    );
   });
 
   it("surfaces radiant investiture as unsupported in the aggregate result", () => {
@@ -152,12 +166,14 @@ describe("derived stat calculators", () => {
       }
     });
 
-    expect(result.values.investitureMax).toBeNull();
-    expect(result.issues[0]).toEqual(
-      expect.objectContaining({
-        code: "UNSUPPORTED_RULE",
-        path: ["resources", "investiture", "max"]
-      })
+    expect(result.values.resources.investiture.max).toBeNull();
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "UNSUPPORTED_RULE",
+          path: ["resources", "investiture", "max"]
+        })
+      ])
     );
   });
 });
