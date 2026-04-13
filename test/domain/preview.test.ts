@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CharacterSchema, createEmptyCharacter, normalizeCharacterInput } from "../../src/domain/models/character";
 import { issueSchema } from "../../src/domain/models/issues";
+import { buildCreationPreview } from "../../src/domain/rules/preview";
 
 describe("canonical character normalization", () => {
   it("keeps the canonical payload aligned to the approved schema basis", () => {
@@ -200,5 +201,176 @@ describe("canonical character normalization", () => {
         extra: true
       })
     ).toThrow();
+  });
+});
+
+describe("creation preview", () => {
+  it("normalizes a valid draft, applies the free path rank, and exposes selectable metadata", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "agent",
+        cultureExpertiseIds: [],
+        pathIds: []
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 0,
+        willpower: 3,
+        awareness: 3,
+        presence: 0
+      },
+      skills: {
+        insight: { ranks: 0, modifier: 0 },
+        athletics: { ranks: 2, modifier: 0 },
+        leadership: { ranks: 2, modifier: 0 }
+      },
+      expertises: [],
+      talents: ["rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.identity.startingPathId).toBe("agent");
+    expect(preview.character.skills.insight).toEqual({ ranks: 1, modifier: 0 });
+    expect(preview.character.talents).toEqual(expect.arrayContaining(["opportunist", "rousing_presence"]));
+
+    expect(preview.errors).toEqual([]);
+    expect(preview.warnings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "GM_CONFIRMATION_REQUIRED",
+          path: ["ancestry", "human", "bonus_talent"]
+        }),
+        expect.objectContaining({
+          code: "UNSUPPORTED_RULE",
+          path: ["derived", "movement"]
+        })
+      ])
+    );
+
+    expect(preview.derived).toEqual(
+      expect.objectContaining({
+        defenses: {
+          physical: 16,
+          cognitive: 13,
+          spiritual: 13,
+          deflect: null
+        },
+        resources: {
+          health: {
+            max: null
+          },
+          focus: {
+            max: 5
+          },
+          investiture: {
+            max: 0
+          }
+        }
+      })
+    );
+
+    expect(preview.character.derived).toEqual({
+      movement: null,
+      recoveryDie: null,
+      liftingCapacity: null,
+      sensesRange: null
+    });
+
+    expect(preview.selectableMetadata.heroicPaths).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "agent",
+          keyTalentId: "opportunist",
+          startingSkillId: "insight",
+          startingSkillKey: "insight"
+        })
+      ])
+    );
+
+    expect(preview.selectableMetadata.skills).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "heavy_weaponry",
+          characterKey: "heavyWeaponry"
+        })
+      ])
+    );
+  });
+
+  it("surfaces illegal draft selections as errors instead of coercing them", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "agent"
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 0,
+        willpower: 3,
+        awareness: 3,
+        presence: 0
+      },
+      skills: {
+        insight: { ranks: 0, modifier: 0 },
+        athletics: { ranks: 3, modifier: 0 },
+        leadership: { ranks: 1, modifier: 0 }
+      },
+      expertises: [],
+      talents: ["rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.skills.athletics.ranks).toBe(3);
+    expect(preview.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["skills", "athletics"]
+        })
+      ])
+    );
+  });
+
+  it("retains invalid starting paths long enough to report the field-specific error", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "spy"
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 0,
+        willpower: 3,
+        awareness: 3,
+        presence: 0
+      },
+      skills: {
+        athletics: { ranks: 2, modifier: 0 },
+        leadership: { ranks: 2, modifier: 0 }
+      },
+      expertises: [],
+      talents: ["rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.identity.startingPathId).toBe("spy");
+    expect(preview.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["identity", "startingPathId"]
+        })
+      ])
+    );
   });
 });
