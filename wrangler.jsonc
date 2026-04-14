@@ -3,5 +3,11 @@
   "name": "baresafehand",
   "main": "src/index.ts",
   "compatibility_date": "2025-09-06",
-  "minify": false
+  "minify": false,
+  "r2_buckets": [
+    {
+      "binding": "CHARACTERS_BUCKET",
+      "bucket_name": "baresafehand-characters-prod"
+    }
+  ]
 }
