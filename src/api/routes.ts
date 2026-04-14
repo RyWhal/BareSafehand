@@ -1,9 +1,21 @@
+import {
+  createCharacterHandler,
+  getCharacterHandler,
+  updateCharacterHandler
+} from "./handlers/characters";
 import { bootstrapHandler } from "./handlers/bootstrap";
 import { healthHandler } from "./handlers/health";
 import { previewHandler } from "./handlers/preview";
+import type { CharacterStoreEnv } from "../persistence/characterStore";
 import { notFoundResponse } from "./http";
 
-export type Env = Record<string, never>;
+export type Env = CharacterStoreEnv;
+
+function characterTokenFromPath(pathname: string): string | null {
+  const match = pathname.match(/^\/api\/characters\/([^/]+)$/);
+
+  return match?.[1] ?? null;
+}
 
 export function handleRequest(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response> {
   const url = new URL(request.url);
@@ -18,6 +30,20 @@ export function handleRequest(request: Request, env: Env, ctx: ExecutionContext)
 
   if (request.method === "POST" && url.pathname === "/api/creation/preview") {
     return previewHandler(request);
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/characters") {
+    return createCharacterHandler(request, env);
+  }
+
+  const characterToken = characterTokenFromPath(url.pathname);
+
+  if (request.method === "GET" && characterToken) {
+    return getCharacterHandler(characterToken, env);
+  }
+
+  if (request.method === "PUT" && characterToken) {
+    return updateCharacterHandler(request, characterToken, env);
   }
 
   return notFoundResponse();

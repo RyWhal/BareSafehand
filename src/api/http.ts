@@ -50,6 +50,33 @@ export function badRequestJsonResponse(message = "Malformed JSON body"): Respons
   );
 }
 
+export function validationFailedResponse(
+  errors: Array<{
+    code: string;
+    message: string;
+    path: Array<string | number>;
+    context: Record<string, unknown>;
+  }>
+): Response {
+  return noIndexJsonResponse({ errors }, { status: 400 });
+}
+
+export function notFoundIssueResponse(message = "Not found."): Response {
+  return noIndexJsonResponse(
+    {
+      errors: [
+        {
+          code: "NOT_FOUND",
+          message,
+          path: [],
+          context: {}
+        }
+      ]
+    },
+    { status: 404 }
+  );
+}
+
 export async function readJsonBody(request: Request): Promise<{ ok: true; value: unknown } | { ok: false; response: Response }> {
   try {
     return {
