@@ -373,4 +373,120 @@ describe("creation preview", () => {
       ])
     );
   });
+
+  it("reports missing attributes even though the preview character stays canonical", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "agent"
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 3,
+        willpower: 3
+      },
+      skills: {
+        insight: { ranks: 0, modifier: 0 },
+        athletics: { ranks: 2, modifier: 0 },
+        leadership: { ranks: 2, modifier: 0 }
+      },
+      expertises: [],
+      talents: ["rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.attributes.awareness).toBe(0);
+    expect(preview.character.attributes.presence).toBe(0);
+    expect(preview.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["attributes", "awareness"]
+        }),
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["attributes", "presence"]
+        })
+      ])
+    );
+  });
+
+  it("reports duplicate talent picks even though the preview character is deduplicated", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "agent"
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 0,
+        willpower: 3,
+        awareness: 3,
+        presence: 0
+      },
+      skills: {
+        insight: { ranks: 0, modifier: 0 },
+        athletics: { ranks: 2, modifier: 0 },
+        leadership: { ranks: 2, modifier: 0 }
+      },
+      expertises: [],
+      talents: ["rousing_presence", "rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.talents).toEqual(expect.arrayContaining(["rousing_presence", "opportunist"]));
+    expect(preview.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["talents"],
+          message: expect.stringContaining("duplicates")
+        })
+      ])
+    );
+  });
+
+  it("reports duplicate expertise picks even though the preview character is deduplicated", () => {
+    const preview = buildCreationPreview({
+      identity: {
+        ancestryId: "human",
+        startingPathId: "agent"
+      },
+      attributes: {
+        strength: 3,
+        speed: 3,
+        intellect: 1,
+        willpower: 3,
+        awareness: 2,
+        presence: 0
+      },
+      skills: {
+        insight: { ranks: 0, modifier: 0 },
+        athletics: { ranks: 2, modifier: 0 },
+        leadership: { ranks: 2, modifier: 0 }
+      },
+      expertises: ["botany", "botany"],
+      talents: ["rousing_presence"],
+      inventory: {
+        startingKitId: "academic_kit"
+      }
+    });
+
+    expect(preview.character.expertises).toEqual(["botany"]);
+    expect(preview.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "VALIDATION_FAILED",
+          path: ["expertises", "additional"],
+          message: expect.stringContaining("duplicates")
+        })
+      ])
+    );
+  });
 });

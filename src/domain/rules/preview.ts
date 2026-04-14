@@ -22,6 +22,9 @@ import {
 } from "./validation";
 
 type RecordValue = Record<string, unknown>;
+type RawCreationAttributes = Partial<
+  Record<"strength" | "speed" | "intellect" | "willpower" | "awareness" | "presence", unknown>
+>;
 
 export type PreviewSelectableSkill = {
   id: string;
@@ -92,6 +95,42 @@ function toContentSkillId(skillKey: string): string {
 
 function readNumber(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function readDraftAttributes(input: unknown): RawCreationAttributes {
+  if (!isRecord(input) || !isRecord(input.attributes)) {
+    return {};
+  }
+
+  const attributes: RawCreationAttributes = {};
+
+  for (const key of ["strength", "speed", "intellect", "willpower", "awareness", "presence"] as const) {
+    if (key in input.attributes) {
+      attributes[key] = input.attributes[key];
+    }
+  }
+
+  return attributes;
+}
+
+function readDraftTalentIds(input: unknown, fallback: string[]): string[] {
+  if (!isRecord(input) || !Array.isArray(input.talents)) {
+    return fallback;
+  }
+
+  return input.talents.filter((entry): entry is string => typeof entry === "string");
+}
+
+function readDraftExpertiseIds(input: unknown, fallback: string[]): string[] {
+  if (!isRecord(input) || !Array.isArray(input.expertises)) {
+    return fallback;
+  }
+
+  return input.expertises.filter((entry): entry is string => typeof entry === "string");
+}
+
+function mergeValidationTalentIds(rawTalentIds: string[], appliedTalentIds: string[]): string[] {
+  return [...rawTalentIds, ...appliedTalentIds.filter((talentId) => !rawTalentIds.includes(talentId))];
 }
 
 function normalizeCharacterDraft(input: unknown, registry: ReturnType<typeof loadContent>): Character {
@@ -439,6 +478,7 @@ function autoApplyTalents(
 }
 
 function collectValidationIssues(
+  input: unknown,
   character: Character,
   registry: ReturnType<typeof loadContent>,
   requestedHeroicPathId: string | null,
@@ -464,8 +504,16 @@ function collectValidationIssues(
     heroicPathId: appliedHeroicPathId
   });
 
-  errors.push(...validateCreationAttributes(character.attributes).errors);
+  const draftTalentIds = readDraftTalentIds(input, character.talents);
+  const draftExpertiseIds = readDraftExpertiseIds(input, character.expertises);
+  const validationTalentIds = mergeValidationTalentIds(draftTalentIds, character.talents);
+  const draftAttributes = readDraftAttributes(input);
 
+  errors.push(
+    ...validateCreationAttributes(
+      draftAttributes as Partial<Record<keyof typeof character.attributes, number>>
+    ).errors
+  );
   errors.push(
     ...validateCreationSkillRanks({
       startingSkillId: appliedHeroicPathId
@@ -481,7 +529,7 @@ function collectValidationIssues(
   errors.push(
     ...validateCreationExpertiseCount({
       intellect: character.attributes.intellect,
-      additionalExpertiseIds: character.expertises
+      additionalExpertiseIds: draftExpertiseIds
     }).errors
   );
 
@@ -510,7 +558,7 @@ function collectValidationIssues(
       registry,
       heroicPathId: requestedHeroicPathId,
       ancestryId: verifiedAncestry?.id ?? null,
-      selectedTalentIds: character.talents
+      selectedTalentIds: validationTalentIds
     }).errors
   );
 
@@ -534,6 +582,7 @@ export function buildCreationPreview(input: unknown): CreationPreview {
 
   const selectionMetadata = buildSelectableMetadata(registry, appliedHeroicPathId, ancestryId);
   const { errors, warnings } = collectValidationIssues(
+    input,
     character,
     registry,
     requestedHeroicPathId,
